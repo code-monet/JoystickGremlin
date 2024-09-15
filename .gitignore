@@ -22,3 +22,4 @@ debug.txt
 /gremlin/ui_old/
 /releases
 /venv
+/.venv
