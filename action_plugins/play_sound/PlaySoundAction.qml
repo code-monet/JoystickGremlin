@@ -51,11 +51,11 @@ Item {
             Layout.fillWidth: true
 
             placeholderText: null != action ? null : "Input the name of the audio file to play."
-            text: action.sound_filename
+            text: action.soundFilename
             selectByMouse: true
 
             onTextChanged: {
-                action.sound_filename = text
+                action.soundFilename = text
             }
         }
 
@@ -72,12 +72,12 @@ Item {
         SpinBox {
             id: _soundVolume
             Layout.preferredWidth: 100
-            value: 50
+            value: action.soundVolume
             from: 0
             to: 100
             editable: true
             onValueModified: {
-                action.sound_volume = value
+                action.soundVolume = value
             }
         }
    }

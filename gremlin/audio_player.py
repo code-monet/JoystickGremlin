@@ -51,8 +51,7 @@ class AudioPlayer(QtCore.QObject):
         if (
             sequential_play and self.player.playbackState() != QMediaPlayer.StoppedState
         ):
-            playlist_item: PlayListItem = PlayListItem(sound_filename, volume)
-            self.play_list.append(playlist_item)
+            self.play_list.append(PlayListItem(sound_filename, volume))
             return
         else:
             self.play_list.clear()
