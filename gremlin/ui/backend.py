@@ -31,6 +31,7 @@ from gremlin.signal import signal
 
 from gremlin.ui.device import InputIdentifier, IODeviceManagementModel
 from gremlin.ui.profile import InputItemModel, ModeHierarchyModel
+from gremlin.audio_player import AudioPlayer
 
 
 @common.SingletonDecorator
@@ -113,6 +114,7 @@ class Backend(QtCore.QObject):
         else:
             # Stop running the code
             self.runner.stop()
+            AudioPlayer().stop()
             # self._update_statusbar_active(False)
             # self._profile_auto_activated = False
             # current_tab = self.ui.devices.currentWidget()
