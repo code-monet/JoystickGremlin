@@ -16,7 +16,6 @@
 
 from __future__ import annotations
 
-import os
 from typing import List, TYPE_CHECKING
 from xml.etree import ElementTree
 
@@ -34,6 +33,7 @@ from gremlin.ui.action_model import SequenceIndex, ActionModel
 from gremlin.error import GremlinError
 from gremlin.audio_player import AudioPlayer
 from gremlin.config import Configuration
+from gremlin.util import file_exists_and_is_accessible
 
 if TYPE_CHECKING:
     from gremlin.ui.profile import InputItemBindingModel
@@ -169,10 +169,7 @@ class PlaySoundData(AbstractActionData):
         return node
 
     def is_valid(self) -> bool:
-        if len(self.sound_filename) > 0 and os.path.isfile(self.sound_filename) and \
-           os.access(self.sound_filename, os.R_OK):
-            return True
-        return False
+        return file_exists_and_is_accessible(self.sound_filename)
 
     def _valid_selectors(self) -> List[str]:
         return []

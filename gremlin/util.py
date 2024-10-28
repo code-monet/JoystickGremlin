@@ -992,3 +992,14 @@ def rad2deg(angle: float) -> float:
         angle in degree
     """
     return angle * (180.0 / math.pi)
+
+
+def file_exists_and_is_accessible(filename: str) -> bool:
+    """Returns true when a provided filename exists and can be read."""
+
+    return (
+        isinstance(filename, str) and
+        len(filename) > 0 and
+        os.path.isfile(filename) and
+        os.access(filename, os.R_OK)
+        )

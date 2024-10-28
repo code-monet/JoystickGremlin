@@ -16,7 +16,6 @@
 
 from __future__ import annotations
 
-import os
 import logging
 from typing import List, TYPE_CHECKING
 from xml.etree import ElementTree
@@ -34,6 +33,7 @@ from gremlin.types import ActionProperty, InputType, PropertyType
 from gremlin.ui.action_model import SequenceIndex, ActionModel
 from gremlin.ui import backend
 from gremlin.error import GremlinError
+from gremlin.util import file_exists_and_is_accessible
 
 if TYPE_CHECKING:
     from gremlin.ui.profile import InputItemBindingModel
@@ -151,10 +151,7 @@ class LoadProfileData(AbstractActionData):
         return node
 
     def is_valid(self) -> bool:
-        if len(self.profile_filename) > 0 and os.path.isfile(self.profile_filename) and \
-           os.access(self.profile_filename, os.R_OK):
-            return True
-        return False
+        return file_exists_and_is_accessible(self.profile_filename)
 
     def _valid_selectors(self) -> List[str]:
         return []
