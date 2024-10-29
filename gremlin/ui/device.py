@@ -17,6 +17,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import time
 import uuid
@@ -30,11 +31,106 @@ import dill
 from gremlin import common, event_handler, joystick_handling, shared_state
 from gremlin.error import GremlinError
 from gremlin.intermediate_output import IntermediateOutput
-from gremlin.types import InputType
+from gremlin.types import InputType, PropertyType
+from gremlin.util import file_exists_and_is_accessible
+from gremlin.common import SingletonDecorator
+from gremlin.config import Configuration
 
 
 QML_IMPORT_NAME = "Gremlin.Device"
 QML_IMPORT_MAJOR_VERSION = 1
+
+
+@SingletonDecorator
+class DeviceDatabase:
+    """Provides button/axis to name mapping for known devices"""
+
+    def __init__(self) -> None:
+        self._load()
+
+    def _load(self) -> None:
+
+        db_file = "device_db.json"
+        if not file_exists_and_is_accessible(db_file):
+            return
+
+        load_successful = False
+        json_data = {}
+        with open(db_file) as hdl:
+            try:
+                decoder = json.JSONDecoder()
+                json_data = decoder.decode(hdl.read())
+                load_successful = True
+            except ValueError:
+                pass
+
+        if not load_successful:
+            logging.getLogger("system").error(
+                    f"There was an error loading {db_file}. "
+                    "Probably it's a syntax error, "
+                    "please fix the errors and restart the application.")
+
+        # create an empty device database if load was not successful
+        self.device_db = json_data if load_successful else {}
+
+    def input_name(self, input_name: str, input_map: Dict[str, str]) -> str:
+        """
+        Returns the input name based on the global configuration option
+        and availability of information about the input in
+        the device database.
+
+        If a device exists in the device database and it's mapping or
+        the input are not defined, return a default
+        input name, e.g. Axis 1 or Button 1.
+
+        Some devices have configurable number of buttons and/or axes so
+        adjusting device database information might be required in the future.
+        """
+        input_name_display_mode = Configuration().value(
+            "global", "input-names", "input-name-display-mode"
+            )
+
+        if input_name_display_mode == "None" or input_name not in input_map:
+            return input_name
+
+        db_input_name = input_map[input_name].strip()
+
+        # return default input name if input is defined, but empty
+        if len(db_input_name) == 0:
+            return input_name
+
+        # return configured input name style
+        if input_name_display_mode == "Mixed":
+            return f"{input_name} - {db_input_name}"
+        if input_name_display_mode == "Name":
+            return db_input_name
+
+    def get_mapping(self, device: dill.DeviceSummary) -> Dict[str, str]:
+        """Returns the button/axis <-> name mapping of a device"""
+        if device is None:
+            return None
+
+        for d in self.device_db["devices"]:
+            if (
+                d["product"] == device.product_id and
+                d["vendor"] == device.vendor_id
+            ):
+                if (
+                    "mapping" not in d or
+                    d["mapping"] not in self.device_db["mapping"]
+                ):
+                    logging.getLogger("system").warning(
+                        f"Unable to find device mapping for product_id={device.product_id} "
+                        f"vendor_id={device.vendor_id}")
+                    return None
+
+                return self.device_db["mapping"][d["mapping"]]
+
+        logging.getLogger("system").warning(
+            f"Unsupported device product_id={device.product_id} "
+            f"vendor_id={device.vendor_id}")
+
+        return None
 
 
 @QtQml.QmlElement
@@ -194,6 +290,7 @@ class Device(QtCore.QAbstractListModel):
         super().__init__(parent)
 
         self._device: dill.DeviceSummary | None = None
+        self.device_mapping: Dict[str, str] | None = None
 
     @Slot(int)
     def refreshInput(self, index: int) -> None:
@@ -218,6 +315,7 @@ class Device(QtCore.QAbstractListModel):
         self._device = dill.DILL.get_device_information_by_guid(
             dill.GUID.from_str(guid)
         )
+        self.device_mapping = DeviceDatabase().get_mapping(self._device)
         self.deviceChanged.emit()
         self.layoutChanged.emit()
 
@@ -283,10 +381,15 @@ class Device(QtCore.QAbstractListModel):
         return identifier
 
     def _name(self, identifier: Tuple[InputType, int]) -> str:
-        return "{} {:d}".format(
+        input_name = "{} {:d}".format(
             InputType.to_string(identifier[0]).capitalize(),
             identifier[1]
-        )
+            )
+
+        if self.device_mapping is not None:
+            return DeviceDatabase().input_name(input_name, self.device_mapping)
+        else:
+            return input_name
 
     def _convert_index(self, index: int) -> Tuple[InputType, int]:
         axis_count = self._device.axis_count
@@ -998,3 +1101,17 @@ class DeviceAxisSeries(QtCore.QObject):
         fget=_get_window_size,
         notify=windowSizeChanged
     )
+
+
+Configuration().register(
+    "global",
+    "input-names",
+    "input-name-display-mode",
+    PropertyType.Selection,
+    "Mixed",
+    "Defines how input name is displayed.",
+    {
+        "valid_options": ["None", "Mixed", "Name"]
+    },
+    True
+)
