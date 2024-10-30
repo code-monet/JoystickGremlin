@@ -434,7 +434,7 @@ class InputItemBindingModel(QtCore.QObject):
         """
         if index not in self._index_lookup:
             raise GremlinError(f"No action with provided index: {index}")
-        return self._action_models[self._index_lookup[index]].data
+        return self._action_models[self._index_lookup[index]]._data
 
     def move_action(
             self,
