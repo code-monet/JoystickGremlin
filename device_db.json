@@ -2,56 +2,56 @@
     "revision": 1,
     "devices": [
         {
-            "vendor": 16536,
-            "product": 48902,
+            "vendor_id": 16536,
+            "product_id": 48902,
             "name": "WINWING ICP",
             "mapping": "winwing_icp"
         },
         {
-            "vendor": 16536,
-            "product": 48865,
+            "vendor_id": 16536,
+            "product_id": 48865,
             "name": "WINWING MFD1-L",
             "mapping": "winwing_mfd"
         },
         {
-            "vendor": 16536,
-            "product": 48866,
+            "vendor_id": 16536,
+            "product_id": 48866,
             "name": "WINWING MFD1-R",
             "mapping": "winwing_mfd"
         },
         {
-            "vendor": 16536,
-            "product": 48866,
+            "vendor_id": 16536,
+            "product_id": 48866,
             "name": "WINWING MFD1-C",
             "mapping": "winwing_mfd"
         },
         {
-            "vendor": 16536,
-            "product": 48644,
+            "vendor_id": 16536,
+            "product_id": 48644,
             "name": "WINWING F18 TAKEOFF PANEL",
             "mapping": "winwing_f18_to_panel"
         },
         {
-            "vendor": 16536,
-            "product": 48645,
+            "vendor_id": 16536,
+            "product_id": 48645,
             "name": "WINWING F18 COMBAT READY PANEL",
             "mapping": "winwing_f18_combat_ready_panel"
         },
         {
-            "vendor": 16536,
-            "product": 48484,
+            "vendor_id": 16536,
+            "product_id": 48484,
             "name": "WINWING Orion Throttle Base II + F15EX HANDLE L + F15EX HANDLE R",
             "mapping": "winwing_orion_throttle_baseII_F15EXLR"
         },
         {
-            "vendor": 16536,
-            "product": 48808,
+            "vendor_id": 16536,
+            "product_id": 48808,
             "name": "WINWING Orion Joystick Base 2 + JGRIP-F16",
             "mapping": "winwing_orion_joy_base2_F16EX"
         },
         {
-            "vendor": 1699,
-            "product": 1892,
+            "vendor_id": 1699,
+            "product_id": 1892,
             "name": "Saitek Pro Flight Combat Rudder Pedals",
             "mapping": "saitek_pro_combat_rudder_pedals"
         }

@@ -32,13 +32,60 @@ from gremlin import common, event_handler, joystick_handling, shared_state
 from gremlin.error import GremlinError
 from gremlin.intermediate_output import IntermediateOutput
 from gremlin.types import InputType, PropertyType
-from gremlin.util import file_exists_and_is_accessible
+import gremlin.util as util
 from gremlin.common import SingletonDecorator
 from gremlin.config import Configuration
 
 
 QML_IMPORT_NAME = "Gremlin.Device"
 QML_IMPORT_MAJOR_VERSION = 1
+
+
+class DeviceMapping:
+
+    def __init__(self, input_map: Dict[str, Any]) -> None:
+        self._input_map = input_map
+
+    def input_name(self, input_name: str) -> str:
+        """
+
+        Args:
+            input_name - name of the original input, e.g.: "Axis 1" or "Button 1"
+
+        Returns:
+            The input name based on the global configuration option
+            and availability of information about the input in
+            the device device mapping.
+
+            If a device exists in the device database and it's mapping or
+            the input are not defined, input_name() returns a default
+            input name, e.g. Axis 1 or Button 1.
+
+            Note that some devices have configurable number of buttons and/or axes
+            so adjusting device database information might be required in the future.
+        """
+        input_name_display_mode = Configuration().value(
+            "global", "input-names", "input-name-display-mode"
+            )
+
+        if (
+            input_name_display_mode == "Numerical" or
+            input_name not in self._input_map
+        ):
+            return input_name
+
+        db_input_name = self._input_map[input_name].strip()
+
+        # return default input name if input is defined, but empty
+        if len(db_input_name) == 0:
+            return input_name
+
+        # return configured input name style
+        if input_name_display_mode == "Numerical + Label":
+            return f"{input_name} - {db_input_name}"
+        if input_name_display_mode == "Label":
+            return db_input_name
+
 
 
 @SingletonDecorator
@@ -50,8 +97,8 @@ class DeviceDatabase:
 
     def _load(self) -> None:
 
-        db_file = "device_db.json"
-        if not file_exists_and_is_accessible(db_file):
+        db_file = util.resource_path("device_db.json")
+        if not util.file_exists_and_is_accessible(db_file):
             return
 
         load_successful = False
@@ -70,61 +117,76 @@ class DeviceDatabase:
                     "Probably it's a syntax error, "
                     "please fix the errors and restart the application.")
 
-        # create an empty device database if load was not successful
-        self.device_db = json_data if load_successful else {}
+        parser_successful = self._parse_device_db(json_data)
 
-    def input_name(self, input_name: str, input_map: Dict[str, str]) -> str:
+        if load_successful and parser_successful:
+            self._device_db = json_data
+        else:
+            self._device_db = {"revision": 0, "devices": [], "mapping": {}}
+
+    def _parse_device_db(self, device_db: Dict[str, Any]) -> bool:
         """
-        Returns the input name based on the global configuration option
-        and availability of information about the input in
-        the device database.
+        Parse device_db to make sure it has a valid structure.
 
-        If a device exists in the device database and it's mapping or
-        the input are not defined, return a default
-        input name, e.g. Axis 1 or Button 1.
-
-        Some devices have configurable number of buttons and/or axes so
-        adjusting device database information might be required in the future.
+        This piece could be refactored with JSON schema validation code,
+        if need be in the future.
         """
-        input_name_display_mode = Configuration().value(
-            "global", "input-names", "input-name-display-mode"
-            )
+        parser_successful = True
 
-        if input_name_display_mode == "None" or input_name not in input_map:
-            return input_name
+        # check top structure: devices and mappings
+        if (
+            device_db.get("mapping", None) is None or
+            device_db.get("devices", None) is None or
+            not isinstance(device_db.get("mapping", []), dict) or
+            not isinstance(device_db.get("devices", []), list)
+        ):
+            logging.getLogger("system").error(
+                    "DeviceDatabase is corrupt and/or is missing mapping or device information.")
+            parser_successful = False
 
-        db_input_name = input_map[input_name].strip()
+        # check devices contain mandatory fields
+        device_count = 0
+        for dev in device_db.get("devices", []):
+            if (
+                dev.get("product_id", None) is None or
+                dev.get("vendor_id", None) is None or
+                dev.get("mapping", None) is None
+            ):
+                logging.getLogger("system").error(
+                    f"DeviceDatabase device structure is corrupt for device {dev}")
+                parser_successful = False
+            else:
+                device_count += 1
 
-        # return default input name if input is defined, but empty
-        if len(db_input_name) == 0:
-            return input_name
+        mapping_count = 0
+        for mapping in device_db.get("mapping", []):
+            mapping_count += 1
 
-        # return configured input name style
-        if input_name_display_mode == "Mixed":
-            return f"{input_name} - {db_input_name}"
-        if input_name_display_mode == "Name":
-            return db_input_name
+        if parser_successful and device_count > 0 and mapping_count > 0:
+            return True
 
-    def get_mapping(self, device: dill.DeviceSummary) -> Dict[str, str]:
-        """Returns the button/axis <-> name mapping of a device"""
+        return False
+
+    def get_mapping(self, device: dill.DeviceSummary) -> DeviceMapping | None:
+        """Returns: the button/axis <-> name mapping of a device"""
         if device is None:
             return None
 
-        for d in self.device_db["devices"]:
+        for dev in self._device_db.get("devices", []):
             if (
-                d["product"] == device.product_id and
-                d["vendor"] == device.vendor_id
+                dev.get("product_id", None) == device.product_id and
+                dev.get("vendor_id", None) == device.vendor_id
             ):
                 if (
-                    "mapping" not in d or
-                    d["mapping"] not in self.device_db["mapping"]
+                    "mapping" not in dev or
+                    dev["mapping"] not in self._device_db.get("mapping", [])
                 ):
                     logging.getLogger("system").warning(
                         f"Unable to find device mapping for product_id={device.product_id} "
                         f"vendor_id={device.vendor_id}")
                     return None
 
-                return self.device_db["mapping"][d["mapping"]]
+                return DeviceMapping(self._device_db["mapping"][dev["mapping"]])
 
         logging.getLogger("system").warning(
             f"Unsupported device product_id={device.product_id} "
@@ -290,7 +352,7 @@ class Device(QtCore.QAbstractListModel):
         super().__init__(parent)
 
         self._device: dill.DeviceSummary | None = None
-        self.device_mapping: Dict[str, str] | None = None
+        self._device_mapping: Dict[str, str] | None = None
 
     @Slot(int)
     def refreshInput(self, index: int) -> None:
@@ -315,7 +377,8 @@ class Device(QtCore.QAbstractListModel):
         self._device = dill.DILL.get_device_information_by_guid(
             dill.GUID.from_str(guid)
         )
-        self.device_mapping = DeviceDatabase().get_mapping(self._device)
+
+        self._device_mapping = DeviceDatabase().get_mapping(self._device)
         self.deviceChanged.emit()
         self.layoutChanged.emit()
 
@@ -386,8 +449,8 @@ class Device(QtCore.QAbstractListModel):
             identifier[1]
             )
 
-        if self.device_mapping is not None:
-            return DeviceDatabase().input_name(input_name, self.device_mapping)
+        if self._device_mapping is not None:
+            return self._device_mapping.input_name(input_name)
         else:
             return input_name
 
@@ -1108,10 +1171,10 @@ Configuration().register(
     "input-names",
     "input-name-display-mode",
     PropertyType.Selection,
-    "Mixed",
+    "Numerical & Label",
     "Defines how input name is displayed.",
     {
-        "valid_options": ["None", "Mixed", "Name"]
+        "valid_options": ["Numerical", "Numerical + Label", "Label"]
     },
     True
 )
