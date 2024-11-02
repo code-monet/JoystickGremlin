@@ -18,6 +18,7 @@
 from __future__ import annotations
 
 import json
+from json.decoder import JSONDecodeError
 import logging
 import time
 import uuid
@@ -104,19 +105,12 @@ class DeviceDatabase:
 
         load_successful = False
         json_data = {}
-        with open(db_file) as hdl:
-            try:
-                decoder = json.JSONDecoder()
-                json_data = decoder.decode(hdl.read())
-                load_successful = True
-            except ValueError:
-                pass
-
-        if not load_successful:
+        try:
+            json_data = json.load(open(db_file))
+            load_successful = True
+        except JSONDecodeError as error:
             logging.getLogger("system").error(
-                    f"There was an error loading {db_file}. "
-                    "Probably it's a syntax error, "
-                    "please fix the errors and restart the application.")
+                    f"There was an error loading {db_file}: {error}")
 
         parser_successful = self._parse_device_db(json_data)
 
