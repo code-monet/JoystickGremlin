@@ -50,7 +50,8 @@ class DeviceMapping:
         """
 
         Args:
-            input_name - name of the original input, e.g.: "Axis 1" or "Button 1"
+            input_name - name of the original input,
+                         e.g.: "Axis 1" or "Button 1" or "Hat 1"
 
         Returns:
             The input name based on the global configuration option
@@ -59,7 +60,7 @@ class DeviceMapping:
 
             If a device exists in the device database and it's mapping or
             the input are not defined, input_name() returns a default
-            input name, e.g. Axis 1 or Button 1.
+            input name, e.g. Axis 1 or Button 1 or Hat 1.
 
             Note that some devices have configurable number of buttons and/or axes
             so adjusting device database information might be required in the future.
@@ -90,7 +91,7 @@ class DeviceMapping:
 
 @SingletonDecorator
 class DeviceDatabase:
-    """Provides button/axis to name mapping for known devices"""
+    """Provides button/axis/hat to name mapping for known devices"""
 
     def __init__(self) -> None:
         self._load()

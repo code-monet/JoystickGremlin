@@ -258,14 +258,15 @@
             "Button 40": "DMS LEFT",
             "Button 41": "EX 41",
             "Button 42": "EX 42",
-            "Button 43": "HAT1 RIM N",
+            "Button 43": "HAT1 TRIM N",
             "Button 44": "HAT1 TRIM NE",
             "Button 45": "HAT1 TRIM E",
             "Button 46": "HAT1 TRIM SE",
             "Button 47": "HAT1 TRIM S",
             "Button 48": "HAT1 TRIM SW",
             "Button 49": "HAT1 TRIM W",
-            "Button 50": "HAT1 TRIM NW"
+            "Button 50": "HAT1 TRIM NW",
+            "Hat 1": "TRIM"
         },
         "winwing_orion_throttle_baseII_F15EXLR": {
             "Axis 1": "X",
