@@ -155,7 +155,7 @@ if __name__ == "__main__":
         help="Start Joystick Gremlin minimized",
         action="store_true"
     )
-    args = parser.parse_args()
+    args, _ = parser.parse_known_args()
 
     # Path mangling to ensure Gremlin can run indepent of the CWD
     sys.path.insert(0, gremlin.util.userprofile_path())
@@ -189,6 +189,9 @@ if __name__ == "__main__":
     # +-------------------------------------------------------------------------
     # | Initialize QT system
     # +-------------------------------------------------------------------------
+
+    # debug = QtQml.QQmlDebuggingEnabler()
+    QtCore.QLoggingCategory.setFilterRules("qt.qml.binding.removal.info=true")
 
     # Initialize QT components
     #QtWebEngine.QtWebEngine.initialize()
