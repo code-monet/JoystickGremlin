@@ -16,13 +16,103 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import abc
 import collections
+from typing import List, Tuple
 
-import gremlin.util
+from gremlin import util
 
 
-# Named tuple to facilitate working with 2D coordinates
-Point2D = collections.namedtuple("Point2D", ["x", "y"])
+# Typing alias
+type CoordinateList = List[Tuple[float, float]]
+
+
+class Point2D:
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
+class AbstractCurve(abc.ABC):
+
+    """Base class for all curves, providing a common interface."""
+
+    def __init__(self):
+        pass
+
+    @abc.abstractmethod
+    def control_points(self) -> List:
+        """Returns the list of all control points.
+
+        Returns:
+            List of all control points.
+        """
+        pass
+
+    @abc.abstractmethod
+    def add_control_point(self, x: float, y: float) -> None:
+        """Adds a new control point to the curve.
+
+        Args:
+            x: x-coordinate of the control point
+            y: y-coordinate of the control point
+        """
+        pass
+
+    @abc.abstractmethod
+    def __call__(self, x: float) -> float:
+        """Evaluates the curve at the given location.
+
+        Args:
+            x: location at which to evaluate the curve
+
+        Returns:
+            Function value of the curve at the given location
+        """
+        pass
+
+
+
+class PiecewiseLinear(AbstractCurve):
+
+    def __init__(self, points: CoordinateList):
+        """Creates a piece wise linear curve.
+
+        Args:
+            points: collection of (x, y) coordinates defining the curve
+        """
+        self.points = [Point2D(pt[0], pt[1]) for pt in
+                       sorted(points, key=lambda pt: pt[0])]
+
+    def control_points(self) -> List:
+        return self.points
+
+    def add_control_point(self, x: float, y: float) -> None:
+        self.points.append(Point2D(x, y))
+        self.points = sorted(self.points, key=lambda pt: pt.x)
+
+    def __call__(self, x: float) -> float:
+        """Returns the linearly interpolated value for the given position.
+
+        Args:
+            x the location at which to evaluate the spline
+
+        Returns:
+            linearly interpolated value for the provided position
+        """
+        x = util.clamp(x, -1.0, 1.0)
+
+        if x <= self.points[0].x:
+            return self.points[0].y
+        elif x >= self.points[-1].x:
+            return self.points[-1].y
+        else:
+            for i in range(len(self.points) - 1):
+                a = self.points[i]
+                b = self.points[i + 1]
+                if a.x <= x < b.x:
+                    return a.y + (b.y - a.y) * (x - a.x) / (b.x - a.x)
 
 
 class CubicSpline:
