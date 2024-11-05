@@ -129,53 +129,46 @@ class DeviceDatabase:
         parser_successful = True
 
         # check top structure: devices and mappings
-        if (
-            device_db.get("mapping", None) is None or
-            device_db.get("devices", None) is None or
-            not isinstance(device_db.get("mapping", []), dict) or
-            not isinstance(device_db.get("devices", []), list)
-        ):
+        if (not(
+            isinstance(device_db.get("mapping", None), dict) and
+            isinstance(device_db.get("devices", None), list))
+            ):
             logging.getLogger("system").error(
                     "DeviceDatabase is corrupt and/or is missing mapping or device information.")
             parser_successful = False
 
-        # check devices contain mandatory fields
+        # check that devices contain mandatory fields
         device_count = 0
-        for dev in device_db.get("devices", []):
-            if (
-                dev.get("product_id", None) is None or
-                dev.get("vendor_id", None) is None or
-                dev.get("mapping", None) is None
-            ):
+        for dev in device_db["devices"]:
+            if not ("product_id" in dev and
+                    "vendor_id" in dev and
+                    "mapping" in dev
+                    ):
                 logging.getLogger("system").error(
                     f"DeviceDatabase device structure is corrupt for device {dev}")
                 parser_successful = False
             else:
                 device_count += 1
 
-        mapping_count = 0
-        for mapping in device_db.get("mapping", []):
-            mapping_count += 1
+        # don't parse mapping, just make sure there is at least 1 mapping
+        mapping_count = len(device_db["mapping"])
 
         if parser_successful and device_count > 0 and mapping_count > 0:
             return True
 
         return False
 
+    def _device_matches(self, dev: Dict[str, Any], device: dill.DeviceSummary) -> bool:
+        return dev["product_id"] == device.product_id and dev["vendor_id"] == device.vendor_id
+
     def get_mapping(self, device: dill.DeviceSummary) -> DeviceMapping | None:
-        """Returns: the button/axis <-> name mapping of a device"""
+        """Returns: DeviceMapping object for the detected device"""
         if device is None:
             return None
 
-        for dev in self._device_db.get("devices", []):
-            if (
-                dev.get("product_id", None) == device.product_id and
-                dev.get("vendor_id", None) == device.vendor_id
-            ):
-                if (
-                    "mapping" not in dev or
-                    dev["mapping"] not in self._device_db.get("mapping", [])
-                ):
+        for dev in self._device_db["devices"]:
+            if self._device_matches(dev, device):
+                if dev["mapping"] not in self._device_db["mapping"]:
                     logging.getLogger("system").warning(
                         f"Unable to find device mapping for product_id={device.product_id} "
                         f"vendor_id={device.vendor_id}")
