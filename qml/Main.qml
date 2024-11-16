@@ -33,8 +33,8 @@ ApplicationWindow {
 
     // Basic application setup
     title: backend.windowTitle
-    width: 1000
-    height: 680
+    width: 1400
+    height: 900
     visible: true
     id: _root
 
@@ -386,45 +386,6 @@ ApplicationWindow {
 
                     // Ensure the input panel is showing the physical device
                     showIntermediateOutput(false)
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    propagateComposedEvents: true
-                    onClicked: function(mouse)
-                    {
-                        showIntermediateOutput(false)
-                        mouse.accepted = false
-                        // Force selection of the previously selected item in
-                        // the input list
-                        let old_index = _deviceInputList.inputIndex
-                        _deviceInputList.currentIndex = 0
-                        _deviceInputList.currentIndex = old_index
-                    }
-                }
-
-            }
-
-            // Intermediate output entry
-            Label {
-                text: "Intermediate Output"
-
-                leftPadding: 20
-                rightPadding: 20
-                topPadding: 10
-                bottomPadding: 10
-
-                background: Rectangle {
-                    color: _ioDeviceList.visible ?
-                        Universal.chromeMediumColor : Universal.background
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        showIntermediateOutput(true)
-                        _ioDeviceList.device = backend.getIODeviceManagementModel()
-                    }
                 }
             }
         }

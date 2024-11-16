@@ -1,6 +1,6 @@
 // -*- coding: utf-8; -*-
 //
-// Copyright (C) 2015 - 2022 Lionel Ott
+// Copyright (C) 2015 - 2024 Lionel Ott
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,54 +27,75 @@ import Gremlin.Device
 import Gremlin.Profile
 
 
-// ListView item customized to render DeviceListModel instances as a set
-// of horizontal tabs
+// Render all detected devices using a TabBar while also displaying the
+// Intermediate output tab
 Item {
     id: _root
 
     property DeviceListModel deviceListModel
     property string deviceGuid: deviceListModel.guidAtIndex(0)
-    property alias selectedIndex: _deviceList.currentIndex
 
-    // List view of all inputs present on the currently active device
-    ListView {
+    DeviceTabBar {
         id: _deviceList
+
         anchors.fill: parent
-        orientation: ListView.Horizontal
 
-        model: deviceListModel
-        delegate: _deviceDelegate
+        currentIndex: 0
 
-        // Make it behave like a sensible scrolling container
-        ScrollBar.vertical: ScrollBar {}
-        flickableDirection: Flickable.VerticalFlick
-        boundsBehavior: Flickable.StopAtBounds
-    }
+        Repeater {
+            model: deviceListModel
 
-    // Display name of the device and change background based on the
-    // selection state of the device
-    Component {
-        id: _deviceDelegate
+            JGTabButton {
+                id: _button
 
-        Label {
-            text: name
-            leftPadding: 20
-            rightPadding: 20
-            topPadding: 10
-            bottomPadding: 10
+                text: name
 
-            background: Rectangle {
-                color: model.index == _deviceList.currentIndex
-                    ? Universal.chromeMediumColor : Universal.background
-            }
+                width: _metric.width + 50
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
+                onClicked: function() {
                     _deviceList.currentIndex = model.index
                     _root.deviceGuid = model.guid
+                    showIntermediateOutput(false)
+
+                }
+
+                TextMetrics {
+                    id: _metric
+
+                    font: _button.font
+                    text: _button.text
                 }
             }
         }
-    } // Component
-} // Item
+
+        JGTabButton {
+            id: _ioButton
+
+            text: "Intermediate Output"
+            width: _metric.width + 50
+
+            onClicked: function() {
+                showIntermediateOutput(true)
+                _ioDeviceList.device = backend.getIODeviceManagementModel()
+            }
+
+            TextMetrics {
+                id: _metric
+
+                font: _ioButton.font
+                text: _ioButton.text
+            }
+        }
+    }
+
+    component JGTabButton : TabButton {
+        font.pixelSize: 14
+        font.weight: 600
+
+
+        background: Rectangle {
+            color: parent.checked ? Universal.accent : Universal.background
+        }
+    }
+
+}

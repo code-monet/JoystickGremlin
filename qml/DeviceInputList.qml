@@ -44,7 +44,7 @@ Item {
         function onDeviceChanged()
         {
             inputIndex = _inputList.currentIndex
-            inputIdentifier = device.inputIdentifier(inputIndex);
+            inputIdentifier = device.inputIdentifier(inputIndex)
         }
     }
 
