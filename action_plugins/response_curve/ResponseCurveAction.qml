@@ -22,17 +22,24 @@ import QtQuick.Layouts
 import QtQuick.Window
 
 import QtQuick.Controls.Universal
+import QtQuick.Shapes
+import Qt.labs.qmlmodels
 
-import QtGraphs
+import QtCharts
 
 import Gremlin.Profile
 import Gremlin.ActionPlugins
 import "../../qml"
 
+import "render_helpers.js" as RH
+
 
 Item {
+    id: _root
+
     property ResponseCurveModel action
     property Deadzone deadzone: action.deadzone
+    property alias widgetSize : _vis.size
 
     implicitHeight: _content.height
 
@@ -74,132 +81,206 @@ Item {
         _sliderHigh.second.value = value
     }
 
-
-
     ColumnLayout {
         id: _content
 
         anchors.left: parent.left
         anchors.right: parent.right
 
-        Label {
-            text: "Reponse Curve"
-        }
 
-        GraphsView {
-            width: 400
-            height: 400
+        RowLayout {
+            Layout.fillWidth: true
 
-            theme: GraphTheme {
-                colorTheme: GraphTheme.ColorThemeDark
-                gridMajorBarsColor: "#ccccff"
-                gridMinorBarsColor: "#eeeeff"
-                axisYMajorColor: "#ccccff"
-                axisYMinorColor: "#eeeeff"
-            }
-            BarSeries {
-                axisX: BarCategoryAxis {
-                    categories: ["2023", "2024", "2025"]
-                    lineVisible: false
+            ComboBox {
+                Layout.preferredWidth: 200
+
+                model: ["Piecewise Linear", "Cubic Spline", "Cubic Bezier Spline"]
+
+                Component.onCompleted: function () {
+                    currentIndex = find(_root.action.curveType)
                 }
-                axisY: ValueAxis {
-                    min: 0
-                    max: 10
-                    minorTickCount: 4
-                }
-                BarSet {
-                    values: [7, 6, 9]
-                }
-                BarSet {
-                    values: [9, 8, 6]
+
+                onActivated: function () {
+                    _root.action.curveType = currentText
                 }
             }
+
+            Button {
+                text: "Invert Curve"
+
+                onClicked: _root.action.invertCurve()
+            }
+
+            CheckBox {
+                text: "Symmetric"
+
+                checked: _root.action.isSymmetric
+
+                onToggled: function () {
+                    _root.action.isSymmetric = checked
+                }
+            }
         }
 
+        // Response curve widget
+        Item {
+            id: _vis
+
+            property int size: 450
+            property int border: 2
+
+            Component.onCompleted: function () {
+                action.setWidgetSize(size)
+            }
+
+            width: size + 2 * border
+            height: size + 2 * border
+
+            // Display the background image
+            Image {
+                width: _vis.size
+                height: _vis.size
+                x: _vis.border
+                y: _vis.border
+                source: "grid.svg"
+            }
+
+            // Render the response curve itself not the interactive elemntgs
+            Shape {
+                id: _curve
+
+                width: _vis.size
+                height: _vis.size
+
+                anchors.centerIn: parent
+
+                preferredRendererType: Shape.CurveRenderer
+
+                ShapePath {
+                    strokeColor: "#808080"
+                    strokeWidth: 2
+                    fillColor: "transparent"
+
+                    PathPolyline {
+                        path: action.linePoints
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onDoubleClicked: function (evt) {
+                        action.addControlPoint(
+                            2 * (evt.x / width) - 1,
+                            -2 * (evt.y / height) + 1
+                        )
+                    }
+                }
+            }
+
+            Repeater {
+                id: _repeater
+
+                model: action.controlPoints
+
+                delegate: Component {
+                    // Pick the correct control visualization to load and pass
+                    // the repeater reference in
+                    Loader {
+                        Component.onCompleted: function() {
+                            let url = modelData.hasHandles ? "HandleControl.qml" : "PointControl.qml"
+                            setSource(url, {"repeater": _repeater})
+                        }
+
+                    }
+                }
+            }
+        }
+
+        // Deadzone widget
         Label {
             text: "Deadzone"
         }
 
         GridLayout {
-            Layout.fillWidth: true
+                Layout.fillWidth: true
 
-            columns: 4
+                columns: 4
 
-            RangeSlider {
-                id: _sliderLow
+                RangeSlider {
+                    id: _sliderLow
 
-                Layout.columnSpan: 2
-                Layout.alignment: Qt.AlignRight
+                    Layout.columnSpan: 2
+                    Layout.alignment: Qt.AlignRight
 
-                from: -1.0
-                to: 0.0
+                    from: -1.0
+                    to: 0.0
 
-                first {
-                    onMoved: {
-                        deadzone.low = first.value
+                    first {
+                        onMoved: {
+                            deadzone.low = first.value
+                        }
+                    }
+                    second {
+                        onMoved: {
+                            deadzone.centerLow = second.value
+                        }
                     }
                 }
-                second {
-                    onMoved: {
-                        deadzone.centerLow = second.value
+
+                RangeSlider {
+                    id: _sliderHigh
+
+                    Layout.columnSpan: 2
+                    Layout.alignment: Qt.AlignLeft
+
+                    from: 0.0
+                    to: 1.0
+
+                    first {
+                        onMoved: {
+                            deadzone.centerHigh = first.value
+                        }
+                    }
+                    second {
+                        onMoved: {
+                            deadzone.high = second.value
+                        }
                     }
                 }
-            }
 
-            RangeSlider {
-                id: _sliderHigh
+                FloatSpinBox {
+                    id: _spinLow
 
-                Layout.columnSpan: 2
-                Layout.alignment: Qt.AlignLeft
+                    realValue: -1.0
+                    minValue: -1.0
+                    maxValue: _spinCenterLow.realValue
 
-                from: 0.0
-                to: 1.0
-
-                first {
-                    onMoved: {
-                        deadzone.centerHigh = first.value
+                    onRealValueModified: {
+                        deadzone.low = realValue
                     }
                 }
-                second {
-                    onMoved: {
-                        deadzone.high = second.value
-                    }
+                FloatSpinBox {
+                    id: _spinCenterLow
+
+                    realValue: 0.0
+                    minValue: _spinLow.realValue
+                    maxValue: 0.0
+                }
+                FloatSpinBox {
+                    id: _spinCenterHigh
+
+                    realValue: 0.0
+                    minValue: 0.0
+                    maxValue: _spinHigh.realValue
+                }
+                FloatSpinBox {
+                    id: _spinHigh
+
+                    realValue: 1.0
+                    minValue: _spinCenterHigh.realValue
+                    maxValue: 1.0
                 }
             }
-
-            FloatSpinBox {
-                id: _spinLow
-
-                realValue: -1.0
-                minValue: -1.0
-                maxValue: _spinCenterLow.realValue
-
-                onRealValueModified: {
-                    deadzone.low = realValue
-                }
-            }
-            FloatSpinBox {
-                id: _spinCenterLow
-
-                realValue: 0.0
-                minValue: _spinLow.realValue
-                maxValue: 0.0
-            }
-            FloatSpinBox {
-                id: _spinCenterHigh
-
-                realValue: 0.0
-                minValue: 0.0
-                maxValue: _spinHigh.realValue
-            }
-            FloatSpinBox {
-                id: _spinHigh
-
-                realValue: 1.0
-                minValue: _spinCenterHigh.realValue
-                maxValue: 1.0
-            }
-        }
     }
-
 }
