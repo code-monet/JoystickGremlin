@@ -11,10 +11,10 @@ repository = "https://github.com/WhiteMagic/JoystickGremlin"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.13"
-PySide6 = "^6.7"
-PyInstaller = "^6.6"
-pywin32 = "^306"
-pytest = "^8.1"
+PySide6 = ">=6.8"
+PyInstaller = ">=6.10"
+pywin32 = ">=308"
+pytest = ">=8.3"
 
 [build-system]
 requires = ["poetry-core"]
