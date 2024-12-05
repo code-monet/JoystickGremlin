@@ -52,13 +52,17 @@ os.environ["QT_QUICK_CONTROLS_UNIVERSAL_THEME"] = "Light"
 # os.environ["QML_IMPORT_TRACE"] = "1"
 # os.environ["QSG_RHI"] = "1"
 
+# Path mangling to ensure Gremlin can run indepent of the CWD and
+# ensure configuration folder is created in time
+import gremlin.util
+sys.path.insert(0, gremlin.util.userprofile_path())
+gremlin.util.setup_userprofile()
 
 import gremlin.config
 import gremlin.error
 import gremlin.plugin_manager
 import gremlin.types
 import gremlin.signal
-import gremlin.util
 
 import gremlin.ui.backend
 import gremlin.ui.config
@@ -156,10 +160,6 @@ if __name__ == "__main__":
         action="store_true"
     )
     args, _ = parser.parse_known_args()
-
-    # Path mangling to ensure Gremlin can run indepent of the CWD
-    sys.path.insert(0, gremlin.util.userprofile_path())
-    gremlin.util.setup_userprofile()
 
     # Configure logging for system and user events
     configure_logger({
