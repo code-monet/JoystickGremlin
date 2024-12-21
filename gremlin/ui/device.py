@@ -388,6 +388,7 @@ class Device(QtCore.QAbstractListModel):
                 return self._name(self._convert_index(index.row()))
             case "actionCount":
                 input_info = self._convert_index(index.row())
+                # FIXME: retrieve currently selected moden mae
                 return shared_state.current_profile.get_input_count(
                     self._device.device_guid.uuid,
                     input_info[0],
@@ -396,6 +397,7 @@ class Device(QtCore.QAbstractListModel):
                 )
             case "description":
                 input_info = self._convert_index(index.row())
+                # FIXME: retrieve currently selected moden mae
                 item = shared_state.current_profile.get_input_item(
                     self._device.device_guid.uuid,
                     input_info[0],
@@ -493,8 +495,13 @@ class IODeviceManagementModel(QtCore.QAbstractListModel):
 
     @Slot(str)
     def createInput(self, type_str: str) -> None:
+        self.beginInsertRows(
+            QtCore.QModelIndex(),
+            self.rowCount(),
+            self.rowCount()
+        )
         self._io.create(InputType.to_enum(type_str))
-        self.modelReset.emit()
+        self.endInsertRows()
 
     @Slot(str, str)
     def changeName(self, old_labele: str, new_label: str) -> None:
@@ -525,10 +532,12 @@ class IODeviceManagementModel(QtCore.QAbstractListModel):
             return f"{InputType.to_string(input.type).capitalize()} " \
                 f"{input.suffix}"
         elif role_name == "actionCount":
+            # FIXME: retrieve currently selected moden mae
             return shared_state.current_profile.get_input_count(
                 self._io.device_guid,
                 input.type,
-                input.guid
+                input.guid,
+                "Default"
             )
         elif role_name == "label":
             return input.label
