@@ -44,7 +44,7 @@ Item {
         ListView {
             id: _inputList
 
-            Layout.minimumWidth: 100
+            Layout.minimumWidth: 200
             Layout.fillHeight: true
             Layout.fillWidth: true
 

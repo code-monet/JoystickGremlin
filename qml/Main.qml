@@ -428,7 +428,7 @@ ApplicationWindow {
                 id: _ioDeviceList
 
                 visible: true
-                SplitView.minimumWidth: 150
+                SplitView.minimumWidth: 200
 
                 device: backend.getIODeviceManagementModel()
 
