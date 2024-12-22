@@ -20,7 +20,7 @@ from __future__ import annotations
 from abc import abstractmethod, ABCMeta
 import codecs
 import logging
-from typing import List, Optional, Set, Tuple, TYPE_CHECKING, Callable
+from typing import Dict, List, Optional, Set, Tuple, TYPE_CHECKING, Callable
 import uuid
 from xml.dom import minidom
 from xml.etree import ElementTree

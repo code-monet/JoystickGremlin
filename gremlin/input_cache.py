@@ -156,7 +156,7 @@ class JoystickWrapper:
         for i in range(self._info.axis_count):
             if self._info.axis_map[i].axis_index == axis_index:
                 return i + 1
-        raise GremlinError(
+        raise error.GremlinError(
             f"Axis reverse lookup failed for axis index {axis_index}"
         )
 
@@ -339,5 +339,5 @@ class Keyboard:
             True if the key is pressed, False otherwise
         """
         if isinstance(key, str):
-            key = gremlin.keyboard.key_from_name(key)
+            key = keyboard.key_from_name(key)
         return self._keyboard_state.get(key, False)

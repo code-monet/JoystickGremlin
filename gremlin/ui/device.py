@@ -22,7 +22,7 @@ from json.decoder import JSONDecodeError
 import logging
 import time
 import uuid
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from PySide6 import QtCharts, QtCore, QtQml
 from PySide6.QtCore import Property, Signal, Slot
@@ -388,7 +388,7 @@ class Device(QtCore.QAbstractListModel):
                 return self._name(self._convert_index(index.row()))
             case "actionCount":
                 input_info = self._convert_index(index.row())
-                # FIXME: retrieve currently selected moden mae
+                # FIXME: retrieve currently selected mode
                 return shared_state.current_profile.get_input_count(
                     self._device.device_guid.uuid,
                     input_info[0],
@@ -397,7 +397,7 @@ class Device(QtCore.QAbstractListModel):
                 )
             case "description":
                 input_info = self._convert_index(index.row())
-                # FIXME: retrieve currently selected moden mae
+                # FIXME: retrieve currently selected mode
                 item = shared_state.current_profile.get_input_item(
                     self._device.device_guid.uuid,
                     input_info[0],
@@ -620,7 +620,7 @@ class IODeviceInputsModel(QtCore.QAbstractListModel):
 
     def data(
             self,
-            index: PySide6.QtCore.QModelIndex,
+            index: QtCore.QModelIndex,
             role: int=QtCore.Qt.ItemDataRole.DisplayRole
     ) -> Any:
         if role not in self.roleNames():

@@ -22,7 +22,7 @@ import inspect
 import logging
 import time
 from threading import Thread, Timer
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Any, Callable, List, TYPE_CHECKING
 import uuid
 
 from PySide6 import QtCore
