@@ -141,6 +141,15 @@ class AbstractActionData(ABC):
                 raise GremlinError(f"Unable to create an object")
             return obj
 
+    @classmethod
+    def can_create(cls) -> bool:
+        """Returns if requirements to create his action are met.
+
+        By default this always returns True, however, subclasses can override
+        this method to implement logic that checks specific requirements.
+        """
+        return True
+
     @property
     def id(self) -> uuid.UUID:
         """Returns the identifier of this action.

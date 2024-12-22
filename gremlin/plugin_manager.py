@@ -167,7 +167,9 @@ class PluginManager:
                         )
                         continue
 
-                    if "create" in plugin.__dict__:
+                    # Verify requirements for the plugin are satisfied
+                    if "create" in plugin.__dict__ \
+                            and plugin.create.can_create():
                         # Store plugin class information
                         self._plugins[plugin.create.tag] = plugin.create
                         logging.getLogger("system").debug(
