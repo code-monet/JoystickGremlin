@@ -310,6 +310,10 @@ class MapToVjoyData(AbstractActionData):
         self.axis_scaling = 1.0
         self.button_inverted = False
 
+    @classmethod
+    def can_create(cls) -> bool:
+        return len(joystick_handling.vjoy_devices()) > 0
+
     def _from_xml(self, node: ElementTree.Element, library: Library) -> None:
         self._id = util.read_action_id(node)
         self.vjoy_device_id = util.read_property(
