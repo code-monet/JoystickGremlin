@@ -29,6 +29,7 @@ Item {
     id: _root
 
     property InputItemBindingModel inputBinding
+    property InputItemModel inputItemModel
     property MouseArea dragHandleArea: _dragArea
 
     height: _generalHeader.height + _behaviorAxisButton.height +
@@ -99,7 +100,7 @@ Item {
 
                 onClicked: function()
                 {
-                    inputBinding.deleteActionSequence()
+                    _root.inputItemModel.deleteActionSequnce(_root.inputBinding)
                 }
             }
         }

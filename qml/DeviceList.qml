@@ -34,15 +34,15 @@ Item {
 
     property DeviceListModel deviceListModel
     property string deviceGuid: deviceListModel.guidAtIndex(0)
+    property alias currentIndex: _deviceList.currentIndex
 
     DeviceTabBar {
         id: _deviceList
 
         anchors.fill: parent
 
-        currentIndex: 0
-
         Repeater {
+            id: _physicalInputs
             model: deviceListModel
 
             JGTabButton {
@@ -54,9 +54,10 @@ Item {
 
                 onClicked: function() {
                     _deviceList.currentIndex = model.index
-                    _root.deviceGuid = model.guid
+                    _root.deviceGuid = Qt.binding(
+                        function() { return model.guid }
+                    )
                     showIntermediateOutput(false)
-
                 }
 
                 TextMetrics {
@@ -72,15 +73,14 @@ Item {
             id: _ioButton
 
             text: "Intermediate Output"
-            width: _metric.width + 50
+            width: _metricIO.width + 50
 
             onClicked: function() {
                 showIntermediateOutput(true)
-                _ioDeviceList.device = backend.getIODeviceManagementModel()
             }
 
             TextMetrics {
-                id: _metric
+                id: _metricIO
 
                 font: _ioButton.font
                 text: _ioButton.text
@@ -91,7 +91,6 @@ Item {
     component JGTabButton : TabButton {
         font.pixelSize: 14
         font.weight: 600
-
 
         background: Rectangle {
             color: parent.checked ? Universal.accent : Universal.background

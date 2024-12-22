@@ -329,15 +329,18 @@ ApplicationWindow {
     Connections {
         target: signal
 
+        // Forces a full refresh of the UI
         function onReloadUi() {
             _deviceModel.modelReset()
             _deviceListModel.modelReset()
             _inputConfigurationPanel.reload()
         }
 
+        // Updates a single input item button
         function onInputItemChanged(index) {
             _deviceModel.refreshInput(index)
         }
+
         // function onReloadCurrentInputItem() {
         //     _inputConfigurationPanel.reload()
         // }
@@ -354,8 +357,23 @@ ApplicationWindow {
 
     function showIntermediateOutput(state)
     {
+        // Show the appropriate input list
         _ioDeviceList.visible = state
         _deviceInputList.visible = !state
+
+        // Ensure the actions for the active input are shown
+        if(state)
+        {
+            _inputConfigurationPanel.inputIndex = _ioDeviceList.inputIndex
+            _inputConfigurationPanel.inputIdentifier =
+                _ioDeviceList.inputIdentifier
+        }
+        else
+        {
+            _inputConfigurationPanel.inputIndex = _deviceInputList.inputIndex
+            _inputConfigurationPanel.inputIdentifier =
+                _deviceInputList.inputIdentifier
+        }
     }
 
     // Main window content
@@ -383,8 +401,12 @@ ApplicationWindow {
                 onDeviceGuidChanged: function()
                 {
                     _deviceModel.guid = deviceGuid
+                }
 
-                    // Ensure the input panel is showing the physical device
+                Component.onCompleted: {
+                    // Ensure the physical input panel is shown and the first
+                    // device is highlighted
+                    currentIndex = 0
                     showIntermediateOutput(false)
                 }
             }
@@ -413,17 +435,12 @@ ApplicationWindow {
 
                 // Trigger a model update on the InputConfiguration
                 onInputIdentifierChanged: {
+                    _inputConfigurationPanel.inputIndex = inputIndex
                     _inputConfigurationPanel.inputIdentifier = inputIdentifier
-                }
-
-                // Ensure initial state of input list and input configuration is
-                // synchronized
-                Component.onCompleted: {
-                    // FIXME: Where does this inputIndex variable come from?
-                    //inputIdentifier = device.inputIdentifier(inputIndex)
                 }
             }
 
+            // List of the inputs of the intermediate output device
             IntermediateOutputDevice {
                 id: _ioDeviceList
 
@@ -434,14 +451,8 @@ ApplicationWindow {
 
                 // Trigger a model update on the InputConfiguration
                 onInputIdentifierChanged: {
+                    _inputConfigurationPanel.inputIndex = inputIndex
                     _inputConfigurationPanel.inputIdentifier = inputIdentifier
-                }
-
-                // Ensure initial state of input list and input configuration is
-                // synchronized
-                Component.onCompleted: {
-                    // FIXME: Where does this inputIndex variable come from?
-                    //inputIdentifier = device.inputIdentifier(inputIndex)
                 }
             }
 

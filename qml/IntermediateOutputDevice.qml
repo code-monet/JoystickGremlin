@@ -1,6 +1,6 @@
 // -*- coding: utf-8; -*-
 //
-// Copyright (C) 2015 - 2023 Lionel Ott
+// Copyright (C) 2015 - 2024 Lionel Ott
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -24,7 +23,6 @@ import QtQuick.Window
 import QtQuick.Controls.Universal
 
 import Gremlin.Device
-
 
 // Visualizes the inputs and information about their associated actions
 // contained in the IntermediateOutput system.
@@ -35,7 +33,23 @@ Item {
     property int inputIndex
     property InputIdentifier inputIdentifier
 
-    // List of all the inputs configured
+    // Modal window to allow renaming of inputs
+    TextInputDialog {
+        id: _textInput
+
+        visible: false
+        width: 300
+
+        property var callback: null
+
+        onAccepted: function(value)
+        {
+            callback(value)
+            visible = false
+        }
+    }
+
+    // List of all existing inputs
     ColumnLayout {
         id: _content
 
@@ -57,7 +71,9 @@ Item {
             }
 
             // Make it behave like a sensible scrolling container
-            ScrollBar.vertical: ScrollBar {}
+            ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AlwaysOn
+            }
             flickableDirection: Flickable.VerticalFlick
             boundsBehavior: Flickable.StopAtBounds
         }
@@ -79,8 +95,7 @@ Item {
                 text: Constants.add
                 backgroundColor: Universal.baseLowColor
 
-                onClicked: function()
-                {
+                onClicked: {
                     device.createInput(_input_type.currentValue)
                 }
             }
@@ -102,15 +117,15 @@ Item {
             required property int actionCount
             property ListView view: ListView.view
 
-            property bool isEditing: false
-            property string old_name
-
             // Renders the entire "button" area of the singular input
             Rectangle {
                 id: _inputDisplay
 
-                implicitWidth: view.width
+                implicitWidth: view.width - _inputList.ScrollBar.vertical.width
                 height: 50
+
+                color: index == view.currentIndex
+                    ? Universal.chromeMediumColor : Universal.background
 
                 MouseArea {
                     anchors.fill: parent
@@ -119,87 +134,51 @@ Item {
                     }
                 }
 
-                color: index == view.currentIndex
-                    ? Universal.chromeMediumColor : Universal.background
+                // User specified name assigned to this output
+                Label {
+                    text: label
+                    font.weight: 600
 
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.leftMargin: 5
+                    anchors.topMargin: 5
+                }
+
+                // Internal UUID-based name
                 Text {
                     text: name
-
-                    padding: 4
-                    anchors.left: parent.left
-                    anchors.bottom: parent.bottom
-                }
-
-                Text {
-                    text: actionCount
-
-                    padding: 4
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                }
-
-                // Editable label of the input which also allows for selecting
-                // the input.
-                TextInput {
-                    id: _label
-
-                    text: label
-                    font.pixelSize: 15
-                    padding: 4
-
-                    activeFocusOnPress: false
-                    readOnly: !isEditing
-                    selectByMouse: isEditing
+                    anchors.leftMargin: 5
+                    anchors.topMargin: 5
 
                     anchors.left: parent.left
-                    anchors.right: _btnEdit.left
-
-                    cursorVisible: isEditing
-                    z: 3
-
-                    onActiveFocusChanged: function()
-                    {
-                        if(activeFocus)
-                        {
-                            old_name = text
-                            view.currentIndex = index
-                        }
-                    }
-
-                    onEditingFinished: function()
-                    {
-                        isEditing = false
-                        device.changeName(old_name, text)
-                        old_name = text
-                    }
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 2
                 }
 
-                // Outline for the TextEdit field
-                Rectangle {
-                    anchors.fill: _label
-                    visible: isEditing
+                Label {
+                    text: actionCount ? actionCount : ""
 
-                    color: parent.color
-                    border {
-                        color: Universal.accent
-                        width: 1
-                    }
-                    z: 2
+                    anchors.top: parent.top
+                    anchors.right: _btnTrash.left
+                    anchors.rightMargin: 5
+                    anchors.topMargin: 5
                 }
 
                 // Button to remove an input
                 IconButton {
                     id: _btnTrash
-                    text: Constants.trash
+                    text: Constants.remove
+                    font.pixelSize: 12
 
-                    topPadding: 4
-                    padding: 4
                     anchors.right: parent.right
                     anchors.top: parent.top
+                    anchors.rightMargin: 5
+                    anchors.topMargin: 5
 
-                    onClicked: function()
-                    {
-                        device.deleteInput(_label.text)
+                    onClicked: {
+                        device.deleteInput(label)
                     }
                 }
 
@@ -207,16 +186,19 @@ Item {
                 IconButton {
                     id: _btnEdit
                     text: Constants.edit
+                    font.pixelSize: 12
 
-                    topPadding: 4
-                    padding: 4
-                    anchors.right: _btnTrash.left
-                    anchors.top: parent.top
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.rightMargin: 5
+                    anchors.bottomMargin: 2
 
-                    onClicked: function()
-                    {
-                        isEditing = true
-                        _label.focus = true
+                    onClicked: function () {
+                        _textInput.text = label
+                        _textInput.callback = function(value) {
+                            device.changeName(label, value)
+                        }
+                        _textInput.visible = true
                     }
                 }
             }

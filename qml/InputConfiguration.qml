@@ -32,21 +32,28 @@ Item {
 
     property InputIdentifier inputIdentifier
     property InputItemModel inputItemModel
+    property int inputIndex
+
     signal contentChanged
 
     function reload()
     {
         if(_root.inputIdentifier.isValid) {
-            _root.inputItemModel = backend.getInputItem(_root.inputIdentifier)
+            _root.inputItemModel = backend.getInputItem(
+                _root.inputIdentifier,
+                inputIndex
+            )
         }
         contentChanged()
     }
 
+    // Reload UI when the identifier is changed externally
     onInputIdentifierChanged: {
         reload()
     }
 
     // Reload UI when the model to display changes
+    // FIXME: Currently nothing emits this event
     Connections {
         target: backend
 
@@ -86,7 +93,7 @@ Item {
             boundsBehavior: Flickable.StopAtBounds
 
             // Content to visualize
-            model: _root.inputItemModel.inputItemBindings
+            model: _root.inputItemModel
             delegate: _entryDelegate
         }
 
@@ -114,6 +121,7 @@ Item {
                     implicitWidth: view.width
 
                     inputBinding: modelData
+                    inputItemModel: _root.inputItemModel
                 }
             }
         }
@@ -134,7 +142,7 @@ Item {
                 text: "New Action Sequence"
 
                 onClicked: {
-                    _root.inputItemModel.createNewActionSequence()
+                    _root.inputItemModel.newActionSequence()
                 }
             }
         }

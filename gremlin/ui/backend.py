@@ -152,12 +152,17 @@ class Backend(QtCore.QObject):
         except error.ProfileError as e:
             return 0
 
-    @Slot(InputIdentifier, result=InputItemModel)
-    def getInputItem(self, identifier: InputIdentifier) -> InputItemModel | None:
+    @Slot(InputIdentifier, int, result=InputItemModel)
+    def getInputItem(
+        self,
+        identifier: InputIdentifier,
+        enumeration_index: int
+    ) -> InputItemModel | None:
         """Returns a model for a specified InputItem.
 
         Args:
             identifier: Identifier of a specific InputItem
+            enumeration_index: Index of the model in the device input listing
 
         Returns:
             Model instance representing the specified InputItem
@@ -172,7 +177,7 @@ class Backend(QtCore.QObject):
                 self._ui_mode,
                 True
             )
-            return InputItemModel(item, self)
+            return InputItemModel(item, enumeration_index, self)
         except error.ProfileError as e:
             print(e)
 

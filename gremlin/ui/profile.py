@@ -259,70 +259,6 @@ class HatDirectionModel(QtCore.QObject):
 
 
 @QtQml.QmlElement
-class InputItemModel(QtCore.QObject):
-
-    """QML model class representing an InputItem instance."""
-
-    bindingsChanged = Signal()
-
-    def __init__(self, input_item: gremlin.profile.InputItem, parent=None):
-        super().__init__(parent)
-
-        self._input_item = input_item
-
-    @Property(QtCore.QObject, notify=bindingsChanged)
-    def inputItemBindings(self) -> InputItemBindingListModel:
-        return InputItemBindingListModel(
-            self._input_item.action_sequences,
-            self
-        )
-
-    @Slot()
-    def createNewActionSequence(self) -> None:
-        # Create root action
-        action = PluginManager().create_instance(
-            "Root",
-            self._input_item.input_type
-        )
-
-        # Create binding instance and add it to the input item
-        binding = gremlin.profile.InputItemBinding(self._input_item)
-        binding.root_action = action
-        binding.behavior = self._input_item.input_type
-
-        self._input_item.action_sequences.append(binding)
-        self.bindingsChanged.emit()
-
-    @Slot(str, str, str)
-    def dropAction(self, source: str, target: str, method: str) -> None:
-        """Handles dropping an action tree element
-
-        Args:
-            source: identifier of the tree being dropped
-            target: identifier of the location on which the source is dropped
-            method: type of drop action to perform
-        """
-        # Force a UI refresh without performing any model changes if both
-        # source and target item are identical, i.e. an invalid drag&drop
-        if source == target:
-            self.bindingsChanged.emit()
-            return
-
-        source_id = uuid.UUID(source)
-        target_id = uuid.UUID(target)
-        source_entry = None
-        for idx, entry in enumerate(self._input_item.action_sequences):
-            if entry.root_action.id == source_id:
-                source_entry = self._input_item.action_sequences.pop(idx)
-        if source_entry is not None:
-            for idx, entry in enumerate(self._input_item.action_sequences):
-                if entry.root_action.id == target_id:
-                    self._input_item.action_sequences.insert(idx+1, source_entry)
-
-        self.bindingsChanged.emit()
-
-
-@QtQml.QmlElement
 class InputItemBindingModel(QtCore.QObject):
 
     """Model representing an ActionTree instance."""
@@ -594,12 +530,6 @@ class InputItemBindingModel(QtCore.QObject):
         ])
         return self._container_index_lookup[index] >= indices[-1]
 
-    @Slot()
-    def deleteActionSequence(self) -> None:
-        self._input_item_binding.input_item.remove_item_binding(
-            self._input_item_binding
-        )
-        signal.reloadUi.emit()
 
     @Property(type=str, notify=inputTypeChanged)
     def inputType(self) -> str:
@@ -680,10 +610,14 @@ class InputItemBindingModel(QtCore.QObject):
     )
 
 
-@QtQml.QmlElement
-class InputItemBindingListModel(QtCore.QAbstractListModel):
 
-    """List model of all InputItemBinding instances of a single input item."""
+
+@QtQml.QmlElement
+class InputItemModel(QtCore.QAbstractListModel):
+
+    """QML model class representing an InputItem instance and acting as a
+    model to display the individual InputItemBindingModel instances.
+    """
 
     # This fake single role and the roleName function are needed to have the
     # modelData property available in the QML delegate
@@ -691,26 +625,105 @@ class InputItemBindingListModel(QtCore.QAbstractListModel):
         QtCore.Qt.UserRole + 1: QtCore.QByteArray("fake".encode()),
     }
 
+    bindingsChanged = Signal()
+
     def __init__(
         self,
-        items: List[gremlin.profile.InputItemBinding],
+        input_item: gremlin.profile.InputItem,
+        enumeration_index: int,
         parent=None
     ):
+        """Exposes the list of all action sequences to the UI.
+
+        Args:
+            input_item: Profile InputItem instance to expose
+            enumeration_index: Linear index reflecting the position in the
+                list of device inputs
+            parent: Widget to which this model is parented to
+        """
         super().__init__(parent)
 
-        self._action_configurations = items
+        self._input_item = input_item
+        self._enumeration_index = enumeration_index
+
+    @property
+    def enumeration_index(self) -> int:
+        return self._enumeration_index
+
+    @Slot()
+    def newActionSequence(self) -> None:
+        # Create root action for the new action sqeuence
+        action = PluginManager().create_instance(
+            "Root",
+            self._input_item.input_type
+        )
+
+        # Create binding instance and add it to the input item
+        binding = gremlin.profile.InputItemBinding(self._input_item)
+        binding.root_action = action
+        binding.behavior = self._input_item.input_type
+
+        self.beginInsertRows(
+            QtCore.QModelIndex(),
+            self.rowCount(),
+            self.rowCount()
+        )
+        self._input_item.action_sequences.append(binding)
+        self.endInsertRows()
+        signal.inputItemChanged.emit(self._enumeration_index)
+
+    @Slot(InputItemBindingModel)
+    def deleteActionSequnce(self, binding: InputItemBindingModel) -> None:
+        try:
+            index = self._input_item.action_sequences.index(
+                binding.input_item_binding
+            )
+            self.beginRemoveRows(QtCore.QModelIndex(), index, index)
+            self._input_item.remove_item_binding(binding.input_item_binding)
+            self.endRemoveRows()
+            signal.inputItemChanged.emit(self._enumeration_index)
+        except ValueError:
+            pass
+
+    @Slot(str, str, str)
+    def dropAction(self, source: str, target: str, method: str) -> None:
+        """Handles dropping an action tree element
+
+        Args:
+            source: identifier of the tree being dropped
+            target: identifier of the location on which the source is dropped
+            method: type of drop action to perform
+        """
+        # Force a UI refresh without performing any model changes if both
+        # source and target item are identical, i.e. an invalid drag&drop
+        if source == target:
+            self.bindingsChanged.emit()
+            return
+
+        source_id = uuid.UUID(source)
+        target_id = uuid.UUID(target)
+        source_entry = None
+        for idx, entry in enumerate(self._input_item.action_sequences):
+            if entry.root_action.id == source_id:
+                source_entry = self._input_item.action_sequences.pop(idx)
+        if source_entry is not None:
+            for idx, entry in enumerate(self._input_item.action_sequences):
+                if entry.root_action.id == target_id:
+                    self._input_item.action_sequences.insert(idx+1, source_entry)
+
+        self.bindingsChanged.emit()
 
     def rowCount(self, parent: QtCore.QModelIndex=...) -> int:
-        return len(self._action_configurations)
+        return len(self._input_item.action_sequences)
 
     def data(self, index: QtCore.QModelIndex, role: int=...) -> Any:
         return InputItemBindingModel(
-            self._action_configurations[index.row()],
+            self._input_item.action_sequences[index.row()],
             parent=self
         )
 
     def roleNames(self) -> Dict:
-        return InputItemBindingListModel.roles
+        return InputItemModel.roles
 
 
 @QtQml.QmlElement

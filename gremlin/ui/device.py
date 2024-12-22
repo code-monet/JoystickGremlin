@@ -349,8 +349,10 @@ class Device(QtCore.QAbstractListModel):
         Args:
             index: linear index of the device's inputs to refresh
         """
-        self.beginResetModel()
-        self.endResetModel()
+        self.dataChanged.emit(
+            self.createIndex(index, 0),
+            self.createIndex(index, 0)
+        )
 
     def _get_guid(self) -> str:
         if self._device is None:
@@ -502,19 +504,33 @@ class IODeviceManagementModel(QtCore.QAbstractListModel):
         )
         self._io.create(InputType.to_enum(type_str))
         self.endInsertRows()
+        self.dataChanged.emit(
+            self.createIndex(0, 0),
+            self.createIndex(self.rowCount(), 0)
+        )
 
     @Slot(str, str)
     def changeName(self, old_labele: str, new_label: str) -> None:
         try:
             self._io.set_label(old_labele, new_label)
+            self.dataChanged.emit(
+                self.createIndex(0, 0),
+                self.createIndex(self.rowCount(), 0)
+            )
         except GremlinError:
             # FIXME: Somehow needs to reset the text field to the previous value
             pass
 
     @Slot(str)
     def deleteInput(self, label: str) -> None:
+        item_index = self._label_to_index(label)
+        self.beginRemoveRows(QtCore.QModelIndex(), item_index, item_index)
         self._io.delete(label)
-        self.modelReset.emit()
+        self.endRemoveRows()
+        self.dataChanged.emit(
+            self.createIndex(0, 0),
+            self.createIndex(self.rowCount(), 0)
+        )
 
     def _get_guid(self) -> str:
         return str(self._io.device_guid)
@@ -589,6 +605,18 @@ class IODeviceManagementModel(QtCore.QAbstractListModel):
             The input corresponding to the given index
         """
         return self._io[self._io.labels_of_type()[index]]
+
+    def _label_to_index(self, label: str) -> int:
+        """Returns the index corresponding to the given label.
+
+        Args:
+            label: name of the input for which to determine the index
+
+        Returns:
+            Index of the given label in the backend data storage
+        """
+        all_labels = self._io.labels_of_type()
+        return all_labels.index(label)
 
     def roleNames(self) -> Dict:
         return IODeviceManagementModel.roles

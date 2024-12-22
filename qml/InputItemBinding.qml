@@ -32,6 +32,7 @@ Item {
     id: _root
 
     property InputItemBindingModel inputBinding
+    property InputItemModel inputItemModel
     property InputItemBindingConfigurationHeader headerWidget: _header
 
     implicitHeight: _content.height
@@ -64,6 +65,7 @@ Item {
             Layout.rightMargin: 20
 
             inputBinding: _root.inputBinding
+            inputItemModel: _root.inputItemModel
         }
 
         // +--------------------------------------------------------------------
