@@ -23,7 +23,7 @@ import dill
 
 from gremlin.error import GremlinError, MissingImplementationError
 from gremlin.common import SingletonDecorator
-from gremlin.types import InputType
+from gremlin.types import InputType, HatDirection
 
 
 @SingletonDecorator
@@ -48,6 +48,10 @@ class IntermediateOutput:
             """
             self._label = label
             self._guid = index
+            self._value = None
+
+        def update(self, value: float | bool | HatDirection) -> None:
+            self._value = value
 
         @property
         def label(self) -> str:
@@ -77,6 +81,10 @@ class IntermediateOutput:
         def _input_type(self):
             return InputType.JoystickAxis
 
+        @property
+        def value(self) -> float:
+            return self._value
+
     class Button(Input):
 
         def __init__(self, label: str, index: uuid.UUID):
@@ -85,6 +93,10 @@ class IntermediateOutput:
         def _input_type(self):
             return InputType.JoystickButton
 
+        @property
+        def is_pressed(self) -> bool:
+            return self._value
+
     class Hat(Input):
 
         def __init__(self, label: str, index: uuid.UUID):
@@ -92,6 +104,10 @@ class IntermediateOutput:
 
         def _input_type(self):
             return InputType.JoystickHat
+
+        @property
+        def direction(self) -> HatDirection:
+            return self._value
 
 
     def __init__(self):

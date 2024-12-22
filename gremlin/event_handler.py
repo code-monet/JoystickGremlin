@@ -191,7 +191,6 @@ class EventListener(QtCore.QObject):
         self._keyboard = Keyboard()
 
         self._running = True
-        self._keyboard_state = {}
         self.gremlin_active = False
 
         #self._init_joysticks()
@@ -235,9 +234,8 @@ class EventListener(QtCore.QObject):
         """
         event = dill.InputEvent(data)
         if event.input_type == dill.InputType.Axis:
-            self._joystick[event.device_guid.uuid].axis(event.input_index).update(
-                self._apply_calibration(event)
-            )
+            self._joystick[event.device_guid.uuid].axis(event.input_index) \
+                .update(self._apply_calibration(event))
 
             self.joystick_event.emit(Event(
                 event_type=InputType.JoystickAxis,
@@ -248,9 +246,8 @@ class EventListener(QtCore.QObject):
                 raw_value=event.value
             ))
         elif event.input_type == dill.InputType.Button:
-            self._joystick[event.device_guid.uuid].button(event.input_index).update(
-                event.value == 1
-            )
+            self._joystick[event.device_guid.uuid].button(event.input_index) \
+                .update(event.value == 1)
 
             self.joystick_event.emit(Event(
                 event_type=InputType.JoystickButton,
@@ -260,9 +257,8 @@ class EventListener(QtCore.QObject):
                 is_pressed=event.value == 1
             ))
         elif event.input_type == dill.InputType.Hat:
-            self._joystick[event.device_guid.uuid].hat(event.input_index).update(
-                util.dill_hat_lookup(event.value)
-            )
+            self._joystick[event.device_guid.uuid].hat(event.input_index) \
+                .update(util.dill_hat_lookup(event.value))
 
             self.joystick_event.emit(Event(
                 event_type=InputType.JoystickHat,
@@ -317,7 +313,7 @@ class EventListener(QtCore.QObject):
 
         key_id = (event.scan_code, event.is_extended)
         is_pressed = event.is_pressed
-        is_repeat = self._keyboard_state.get(key_id, False) and is_pressed
+        is_repeat = self._keyboard.is_pressed(key_id) and is_pressed
         # Only emit an event if they key is pressed for the first
         # time or released but not when it's being held down
         if not is_repeat:
@@ -325,7 +321,6 @@ class EventListener(QtCore.QObject):
                 gremlin.keyboard.key_from_code(key_id[0], key_id[1]),
                 is_pressed
             )
-            self._keyboard_state[key_id] = is_pressed
             self.keyboard_event.emit(Event(
                 event_type=InputType.Keyboard,
                 device_guid=dill.UUID_Keyboard,

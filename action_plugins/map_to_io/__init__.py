@@ -25,7 +25,7 @@ from xml.etree import ElementTree
 from PySide6 import QtCore
 from PySide6.QtCore import Property, Signal
 
-from gremlin import mode_manager, util
+from gremlin import input_cache, mode_manager, util
 from gremlin.base_classes import AbstractActionData, AbstractFunctor, \
     DataCreationMode, Value
 from gremlin.error import GremlinError
@@ -46,6 +46,7 @@ class MapToIOFunctor(AbstractFunctor):
     def __init__(self, instance: MapToIOData):
         super().__init__(instance)
         self._io = IntermediateOutput()
+        self._cache = input_cache.Joystick()
         self._event_listener = EventListener()
 
     def __call__(self, event: Event, value: Value) -> None:
@@ -53,14 +54,29 @@ class MapToIOFunctor(AbstractFunctor):
             return
 
         # Emit an event with the IO guid and the rest of the system will
-        # then take core of executing it
+        # then take care of executing it
         io_input = self._io[self.data.io_input_guid]
-        is_pressed = value.current \
-            if io_input.type == InputType.JoystickButton else None
-        if self.data.button_inverted:
-            is_pressed = not is_pressed
-        input_value = value.current \
-            if io_input.type != InputType.JoystickButton else None
+
+        # Determine correct event values and update the input cache
+        is_pressed = None
+        input_value = None
+        match io_input.type:
+            case InputType.JoystickAxis:
+                input_value = value.current
+                self._cache[self._io.device_guid][io_input.guid] \
+                    .update(input_value)
+            case InputType.JoystickButton:
+                is_pressed = value.current
+                if self.data.button_inverted:
+                    is_pressed = not is_pressed
+                self._cache[self._io.device_guid][io_input.guid] \
+                    .update(is_pressed)
+            case InputType.JoystickHat:
+                input_vaue = value.current
+                self._cache[self._io.device_guid][io_input.guid] \
+                    .update(input_value)
+
+        # Emit the event
         self._event_listener.joystick_event.emit(
             Event(
                 event_type=io_input.type,

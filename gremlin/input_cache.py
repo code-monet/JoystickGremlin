@@ -23,10 +23,9 @@ import uuid
 
 from PySide6 import QtCore
 
-from dill import DILL, GUID
+from dill import DILL, GUID, UUID_IntermediateOutput
 from gremlin.common import SingletonDecorator
-from gremlin import types, keyboard
-from gremlin.error import GremlinError
+from gremlin import error, intermediate_output, keyboard, types
 
 
 class JoystickWrapper:
@@ -212,6 +211,7 @@ class JoystickWrapper:
             )
         return self._hats[index]
 
+    @property
     def axis_count(self) -> int:
         """Returns the number of axes of the joystick.
 
@@ -220,6 +220,7 @@ class JoystickWrapper:
         """
         return self._info.axis_count
 
+    @property
     def button_count(self) -> int:
         """Returns the number of buttons on the joystick.
 
@@ -228,6 +229,7 @@ class JoystickWrapper:
         """
         return self._info.button_count
 
+    @property
     def hat_count(self) -> int:
         """Returns the number of hats on the joystick.
 
@@ -293,14 +295,18 @@ class Joystick:
             The corresponding joystick device.
         """
         if device_guid not in self.devices:
-            # If the device exists add process it and add it, otherwise throw
-            # an exception
-            if DILL.device_exists(GUID.from_uuid(device_guid)):
-                self.devices[device_guid] = JoystickWrapper(device_guid)
+            # Handle the intermediate output device first
+            if device_guid == UUID_IntermediateOutput:
+                self.devices[device_guid] = intermediate_output.IntermediateOutput()
             else:
-                raise error.GremlinError(
-                    f"No device with guid '{device_guid}' exists"
-                )
+                # If the device exists add process it and add it, otherwise
+                # throw an exception
+                if DILL.device_exists(GUID.from_uuid(device_guid)):
+                    self.devices[device_guid] = JoystickWrapper(device_guid)
+                else:
+                    raise error.GremlinError(
+                        f"No device with guid '{device_guid}' exists"
+                    )
 
         return self.devices[device_guid]
 
