@@ -20,9 +20,45 @@ from __future__ import annotations
 
 import enum
 from enum import Enum
-from typing import Tuple, Union
+from typing import Generic, Self, TypeVar, Tuple, Union
 
 import gremlin.error
+
+_NumericT = TypeVar("_NumericT", bound=Union[int, float])
+
+
+class RangeValue(Generic[_NumericT]):
+    """A value that can only be in a fixed range."""
+    LOWER_BOUND: _NumericT
+    UPPER_BOUND: _NumericT
+
+    def __init__(self, value: _NumericT):
+        if value < self.LOWER_BOUND:
+            raise ValueError(f"{value=} must be greater than or equal to {self.LOWER_BOUND=}")
+        if value > self.UPPER_BOUND:
+            raise ValueError(f"{value=} must be less than or equal to {self.UPPER_BOUND=}")
+        self._value = value
+
+    @classmethod
+    def clamped(cls, value: _NumericT) -> Self:
+        """Creates a new instance, clamping the provided value within the bounds."""
+        return cls(max(cls.LOWER_BOUND, min(value, cls.UPPER_BOUND)))
+
+    @property
+    def value(self) -> _NumericT:
+        return self._value
+
+
+class DillAnalogValue(RangeValue[int]):
+    """Range of analog values (for a DirectInput axis), as configured by Dill."""
+    LOWER_BOUND: int = -32768
+    UPPER_BOUND: int = 32767
+
+
+class NormalizedAnalogValue(RangeValue[float]):
+    """Range of analog values, normalized to [-1, 1]."""
+    LOWER_BOUND: float = -1.0
+    UPPER_BOUND: float = 1.0
 
 
 class ActivationRule(enum.Enum):
