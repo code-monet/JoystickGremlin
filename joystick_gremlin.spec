@@ -14,6 +14,7 @@ for root, _, files in os.walk("action_plugins"):
 datas = [
     ("gfx", "gfx"),
     ("style/qml", "style/qml"),
+    ("user_scripts", "user_scripts"),
     ("device_db.json", "."),
     ("version.json", "."),
     ("changelog.md", "."),
@@ -22,6 +23,7 @@ datas.extend(action_plugins_files)
 binaries = [
     ("vjoy/vJoyInterface.dll", "."),
     ("dill/dill.dll", "."),
+    ("fffsake/fffsake.pyd", "fffsake"),
     ("dill/dill2.dll", "."),
 ]
 

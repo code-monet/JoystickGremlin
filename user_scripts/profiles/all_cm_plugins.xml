@@ -1,0 +1,584 @@
+﻿<?xml version="1.0" ?>
+<profile version="14">
+    <inputs/>
+    <settings>
+        <startup-mode>Default</startup-mode>
+        <macro-default-delay>0.05</macro-default-delay>
+    </settings>
+    <logical-device/>
+    <library/>
+    <modes>
+        <mode>Default</mode>
+    </modes>
+    <scripts>
+        <script id="4b3259f4-8940-4b88-a798-d74fba2a4e0f">
+            <property type="path">
+                <name>path</name>
+                <value>fffsake.py</value>
+            </property>
+            <property type="string">
+                <name>name</name>
+                <value>Instance 1</value>
+            </property>
+            <variable type="mode">
+                <property type="string">
+                    <name>name</name>
+                    <value>Mode</value>
+                </property>
+                <property type="string">
+                    <name>value</name>
+                    <value>Default</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Mute/Unmute Force Feedback</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>52352a60-019b-11f0-8001-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>5</value>
+                </property>
+            </variable>
+            <variable type="selection">
+                <property type="string">
+                    <name>name</name>
+                    <value>FFFSake Engine</value>
+                </property>
+                <property type="int">
+                    <name>index</name>
+                    <value>0</value>
+                </property>
+            </variable>
+            <variable type="selection">
+                <property type="string">
+                    <name>name</name>
+                    <value>FF Device</value>
+                </property>
+                <property type="int">
+                    <name>index</name>
+                    <value>0</value>
+                </property>
+            </variable>
+            <variable type="selection">
+                <property type="string">
+                    <name>name</name>
+                    <value>FF Device Type</value>
+                </property>
+                <property type="int">
+                    <name>index</name>
+                    <value>0</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Device Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>100</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Constant Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Ramp Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Sine Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>100</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Square Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Triangle Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Sawtooth Up Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Sawtooth Down Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Spring Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Damper Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Inertia Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Friction Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Spring Coefficient %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>100</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Friction Coefficient %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="bool">
+                <property type="string">
+                    <name>name</name>
+                    <value>Compatibility: Restore minimized forces</value>
+                </property>
+                <property type="bool">
+                    <name>value</name>
+                    <value>False</value>
+                </property>
+            </variable>
+            <variable type="bool">
+                <property type="string">
+                    <name>name</name>
+                    <value>Compatibility: Force restart on update</value>
+                </property>
+                <property type="bool">
+                    <name>value</name>
+                    <value>False</value>
+                </property>
+            </variable>
+            <variable type="selection">
+                <property type="string">
+                    <name>name</name>
+                    <value>Y-Axis Forces Handling</value>
+                </property>
+                <property type="int">
+                    <name>index</name>
+                    <value>0</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Device Update Period (ms)</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>5</value>
+                </property>
+            </variable>
+        </script>
+        <script id="d842f800-fee4-409a-b006-3de634fd41fc">
+            <property type="path">
+                <name>path</name>
+                <value>h_shifter.py</value>
+            </property>
+            <property type="string">
+                <name>name</name>
+                <value>Instance 1</value>
+            </property>
+            <variable type="mode">
+                <property type="string">
+                    <name>name</name>
+                    <value>Mode</value>
+                </property>
+                <property type="string">
+                    <name>value</name>
+                    <value>Default</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 1</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>10</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 2</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>11</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 3</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>12</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 4</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>13</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 5</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>14</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 6</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>15</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 7</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>16</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Reverse (output)</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>17</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Neutral</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>12</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Reverse (input)</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>13</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 7 (input)</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>5</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Left-right axis</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>axis</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>1</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Up-down axis</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>axis</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>2</value>
+                </property>
+            </variable>
+        </script>
+        <script id="efbd63ae-19c0-41bd-bc63-3b1002e65b8e">
+            <property type="path">
+                <name>path</name>
+                <value>handbrake.py</value>
+            </property>
+            <property type="string">
+                <name>name</name>
+                <value>Instance 1</value>
+            </property>
+            <variable type="mode">
+                <property type="string">
+                    <name>name</name>
+                    <value>Mode</value>
+                </property>
+                <property type="string">
+                    <name>value</name>
+                    <value>Default</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Handbrake Output (vjoy)</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>9</value>
+                </property>
+            </variable>
+            <variable type="bool">
+                <property type="string">
+                    <name>name</name>
+                    <value>Handbrake output is toggle (vs hold)</value>
+                </property>
+                <property type="bool">
+                    <name>value</name>
+                    <value>True</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Handbrake input axis (throttle or slider)</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>axis</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>6</value>
+                </property>
+            </variable>
+        </script>
+    </scripts>
+    <devices/>
+</profile>

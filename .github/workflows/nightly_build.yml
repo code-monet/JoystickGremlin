@@ -13,7 +13,16 @@ jobs:
       contents: write
     steps:
     - uses: actions/checkout@v6
-    - name: Set up Python
+      with:
+        ref: cm_sim_gamer_kit
+        fetch-depth: 0
+    - name: Fetch develop and rebase CM changes on top
+      run: |
+        git config --global user.email "nobody@github.com"
+        git config --global user.name "Nightly Build"
+        git fetch origin develop
+        git rebase origin/develop
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
         python-version-file: pyproject.toml
