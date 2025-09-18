@@ -12,10 +12,264 @@
         <mode>Default</mode>
     </modes>
     <scripts>
-        <script id="4a4c6a94-e338-4439-9d47-3b48d86e1649">
+        <script id="d842f800-fee4-409a-b006-3de634fd41fc">
             <property type="path">
                 <name>path</name>
-                <value>handbrake.py</value>
+                <value>C:\Users\Code Monet\Documents\GitHub\JoystickGremlin\user_scripts\h_shifter.py</value>
+            </property>
+            <property type="string">
+                <name>name</name>
+                <value>Instance 1</value>
+            </property>
+            <variable type="mode">
+                <property type="string">
+                    <name>name</name>
+                    <value>Mode</value>
+                </property>
+                <property type="string">
+                    <name>value</name>
+                    <value>Default</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 1</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>10</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 2</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>11</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 3</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>12</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 4</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>13</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 5</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>14</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 6</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>15</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 7</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>16</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Reverse (output)</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>17</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Neutral</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>12</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Reverse (input)</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>13</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Gear 7 (input)</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>5</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Left-right axis</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>axis</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>1</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Up-down axis</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>axis</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>2</value>
+                </property>
+            </variable>
+        </script>
+        <script id="efbd63ae-19c0-41bd-bc63-3b1002e65b8e">
+            <property type="path">
+                <name>path</name>
+                <value>C:\Users\Code Monet\Documents\GitHub\JoystickGremlin\user_scripts\handbrake.py</value>
             </property>
             <property type="string">
                 <name>name</name>
@@ -46,7 +300,7 @@
                 </property>
                 <property type="int">
                     <name>input-id</name>
-                    <value>1</value>
+                    <value>9</value>
                 </property>
             </variable>
             <variable type="bool">
@@ -74,7 +328,7 @@
                 </property>
                 <property type="int">
                     <name>input-id</name>
-                    <value>2</value>
+                    <value>6</value>
                 </property>
             </variable>
         </script>
