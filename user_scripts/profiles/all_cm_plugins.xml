@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" ?>
+<profile version="14">
+    <inputs/>
+    <devices/>
+    <settings>
+        <startup-mode>Default</startup-mode>
+        <macro-default-delay>0.05</macro-default-delay>
+    </settings>
+    <logical-device/>
+    <library/>
+    <modes>
+        <mode>Default</mode>
+    </modes>
+    <scripts>
+        <script id="4a4c6a94-e338-4439-9d47-3b48d86e1649">
+            <property type="path">
+                <name>path</name>
+                <value>handbrake.py</value>
+            </property>
+            <property type="string">
+                <name>name</name>
+                <value>Instance 1</value>
+            </property>
+            <variable type="mode">
+                <property type="string">
+                    <name>name</name>
+                    <value>Mode</value>
+                </property>
+                <property type="string">
+                    <name>value</name>
+                    <value>Default</value>
+                </property>
+            </variable>
+            <variable type="vjoy">
+                <property type="string">
+                    <name>name</name>
+                    <value>Handbrake Output (vjoy)</value>
+                </property>
+                <property type="int">
+                    <name>vjoy-id</name>
+                    <value>1</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>1</value>
+                </property>
+            </variable>
+            <variable type="bool">
+                <property type="string">
+                    <name>name</name>
+                    <value>Handbrake output is toggle (vs hold)</value>
+                </property>
+                <property type="bool">
+                    <name>value</name>
+                    <value>True</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Handbrake input axis (throttle or slider)</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>97b77b40-07d8-11f0-8028-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>axis</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>2</value>
+                </property>
+            </variable>
+        </script>
+    </scripts>
+</profile>
