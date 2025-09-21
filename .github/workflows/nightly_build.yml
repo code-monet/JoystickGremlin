@@ -6,6 +6,7 @@ on:
   #     - "nightly-build-action"
   schedule:
     - cron: '45 23 * * *' # runs daily at 23:45
+  workflow_dispatch:      # Allows manual trigger
 
 jobs:
   build:
@@ -16,6 +17,15 @@ jobs:
         poetry-version: ["latest"]
     steps:
     - uses: actions/checkout@v6
+      with:
+        ref: cm_sim_gamer_kit
+        fetch-depth: 0
+    - name: Fetch develop and rebase CM changes on top
+      run: |
+        git config --global user.email "nobody@github.com"
+        git config --global user.name "Nightly Build"
+        git fetch origin develop
+        git rebase origin/develop
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
