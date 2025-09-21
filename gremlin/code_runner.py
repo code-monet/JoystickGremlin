@@ -408,6 +408,7 @@ class CodeRunner:
             self._running = True
 
             sendinput.MouseController().start()
+            user_script.user_setup_teardown_register.start()
         except ImportError as e:
             util.display_error(
                 "Unable to launch due to missing user plugin: {}"
@@ -432,6 +433,8 @@ class CodeRunner:
         # Stop periodic events and clear registry
         user_script.periodic_registry.stop()
         user_script.periodic_registry.clear()
+        # Execute user script teardowns.
+        user_script.user_setup_teardown_register.stop()
 
         macro.MacroManager().stop()
         sendinput.MouseController().stop()

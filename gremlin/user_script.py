@@ -197,8 +197,23 @@ class PeriodicRegistry:
             time.sleep(min(self._queue[0][0] - time.time(), 1.0))
 
 
+class UserSetupTeardownRegistry:
+    """Registry of user-defined setup and teardown callbacks."""
+    # TODO: Make this nicer.
+    setup_cbs = {}
+    teardown_cbs = {}
+
+    def start(self):
+        for cb in self.setup_cbs.values():
+            cb()
+
+    def stop(self):
+        for cb in self.teardown_cbs.values():
+            cb()
+
 callback_registry = CallbackRegistry()
 periodic_registry = PeriodicRegistry()
+user_setup_teardown_register = UserSetupTeardownRegistry()
 
 
 class JoystickDecorator:
