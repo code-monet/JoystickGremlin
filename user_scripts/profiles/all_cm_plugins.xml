@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" ?>
 <profile version="14">
     <inputs/>
-    <devices/>
     <settings>
         <startup-mode>Default</startup-mode>
         <macro-default-delay>0.05</macro-default-delay>
@@ -12,10 +11,208 @@
         <mode>Default</mode>
     </modes>
     <scripts>
+        <script id="4b3259f4-8940-4b88-a798-d74fba2a4e0f">
+            <property type="path">
+                <name>path</name>
+                <value>fffsake.py</value>
+            </property>
+            <property type="string">
+                <name>name</name>
+                <value>Instance 1</value>
+            </property>
+            <variable type="mode">
+                <property type="string">
+                    <name>name</name>
+                    <value>Mode</value>
+                </property>
+                <property type="string">
+                    <name>value</name>
+                    <value>Default</value>
+                </property>
+            </variable>
+            <variable type="physical-input">
+                <property type="string">
+                    <name>name</name>
+                    <value>Mute/Unmute Force Feedback</value>
+                </property>
+                <property type="uuid">
+                    <name>device-guid</name>
+                    <value>52352a60-019b-11f0-8001-444553540000</value>
+                </property>
+                <property type="input_type">
+                    <name>input-type</name>
+                    <value>button</value>
+                </property>
+                <property type="int">
+                    <name>input-id</name>
+                    <value>5</value>
+                </property>
+            </variable>
+            <variable type="selection">
+                <property type="string">
+                    <name>name</name>
+                    <value>FFFSake Engine</value>
+                </property>
+                <property type="int">
+                    <name>index</name>
+                    <value>0</value>
+                </property>
+            </variable>
+            <variable type="selection">
+                <property type="string">
+                    <name>name</name>
+                    <value>FF Device</value>
+                </property>
+                <property type="int">
+                    <name>index</name>
+                    <value>0</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Constant Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Ramp Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Sine Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>100</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Square Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Triangle Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Sawtooth Up Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Sawtooth Down Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Spring Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Damper Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Inertia Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Friction Gain %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>50</value>
+                </property>
+            </variable>
+            <variable type="int">
+                <property type="string">
+                    <name>name</name>
+                    <value>Spring Coefficient %</value>
+                </property>
+                <property type="int">
+                    <name>value</name>
+                    <value>100</value>
+                </property>
+            </variable>
+            <variable type="bool">
+                <property type="string">
+                    <name>name</name>
+                    <value>Compatibility: Restore minimized forces</value>
+                </property>
+                <property type="bool">
+                    <name>value</name>
+                    <value>False</value>
+                </property>
+            </variable>
+            <variable type="bool">
+                <property type="string">
+                    <name>name</name>
+                    <value>Compatibility: Force restart on update</value>
+                </property>
+                <property type="bool">
+                    <name>value</name>
+                    <value>False</value>
+                </property>
+            </variable>
+        </script>
         <script id="d842f800-fee4-409a-b006-3de634fd41fc">
             <property type="path">
                 <name>path</name>
-                <value>C:\Users\Code Monet\Documents\GitHub\JoystickGremlin\user_scripts\h_shifter.py</value>
+                <value>h_shifter.py</value>
             </property>
             <property type="string">
                 <name>name</name>
@@ -269,7 +466,7 @@
         <script id="efbd63ae-19c0-41bd-bc63-3b1002e65b8e">
             <property type="path">
                 <name>path</name>
-                <value>C:\Users\Code Monet\Documents\GitHub\JoystickGremlin\user_scripts\handbrake.py</value>
+                <value>handbrake.py</value>
             </property>
             <property type="string">
                 <name>name</name>
@@ -333,4 +530,5 @@
             </variable>
         </script>
     </scripts>
+    <devices/>
 </profile>
