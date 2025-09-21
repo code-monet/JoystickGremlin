@@ -17,12 +17,14 @@ datas = [
     ("doc", "doc"),
     ("gfx", "gfx"),
     ("qml", "qml"),
+    ("user_scripts", "user_scripts"),
     ("device_db.json", "."),
 ]
 datas.extend(action_plugins_files)
 binaries = [
     ("vjoy/vJoyInterface.dll", "."),
     ("dill/dill.dll", "."),
+    ("fffsake/fffsake.pyd", "fffsake"),
 ]
 
 hidden_imports = [
