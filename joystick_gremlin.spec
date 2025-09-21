@@ -14,6 +14,7 @@ for root, _, files in os.walk("action_plugins"):
 datas = [
     ("gfx", "gfx"),
     ("qml", "qml"),
+    ("user_scripts", "user_scripts"),
     ("theme", "theme"),
     ("device_db.json", "."),
     ("version.json", ".")
@@ -22,6 +23,7 @@ datas.extend(action_plugins_files)
 binaries = [
     ("vjoy/vJoyInterface.dll", "."),
     ("dill/dill.dll", "."),
+    ("fffsake/fffsake.pyd", "fffsake"),
 ]
 
 # List all action plugin code files by their import name as pyinstaller
